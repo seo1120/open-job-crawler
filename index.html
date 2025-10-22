@@ -241,7 +241,13 @@
         const res = await fetch('data/jobs.json?ts=' + Date.now());
         const data = await res.json();
         JOBS = Array.isArray(data) ? data : [];
-        updatedEl.textContent = new Date().toLocaleString();
+        // 실제 데이터 크롤링 시각 사용
+        const latestCrawlTime = JOBS.length > 0 ? JOBS[0].crawled_at : null;
+        if (latestCrawlTime) {
+          updatedEl.textContent = new Date(latestCrawlTime).toLocaleString();
+        } else {
+          updatedEl.textContent = new Date().toLocaleString();
+        }
         applyFilters();
       } catch (e){
         list.innerHTML = `<div class='rounded-2xl border border-red-200 dark:border-red-900 p-6 text-sm text-red-700 dark:text-red-300'>데이터를 불러오지 못했어요. 잠시 후 다시 시도해주세요.</div>`

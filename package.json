@@ -1,0 +1,26 @@
+{
+  "name": "open-job-crawler",
+  "version": "1.0.0",
+  "description": "인턴·주니어 개발자 포지션 자동 수집 피드",
+  "main": "index.js",
+  "scripts": {
+    "crawl": "node crawler/goodfirstjob.js",
+    "process": "node scripts/process-with-gemini.js",
+    "pipeline": "node scripts/run-pipeline.js",
+    "dev": "python -m http.server 8000",
+    "start": "npm run pipeline && npm run dev",
+    "build": "echo 'Static site - no build needed'",
+    "vercel-build": "echo 'Static site - using existing data'"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "@google/generative-ai": "^0.2.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "keywords": ["job", "crawler", "playwright", "gemini", "korea"],
+  "author": "Lumi",
+  "license": "MIT"
+}

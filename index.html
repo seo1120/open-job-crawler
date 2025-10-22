@@ -39,8 +39,8 @@
         <h1 class="text-base sm:text-lg font-semibold leading-tight">Open Job Crawler</h1>
         <p class="text-xs text-neutral-500 dark:text-neutral-400">미국 인턴·주니어 포지션 자동 수집 피드</p>
       </div>
-      <button id="themeToggle" class="text-sm px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900">🌙/☀️</button>
-      <a id="ghLink" href="#" target="_blank" class="text-sm px-3 py-1.5 rounded-lg bg-neutral-900 text-white dark:bg-white dark:text-neutral-900">GitHub</a>
+        <button id="slackNotify" class="text-sm px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-400 to-cyan-300 text-white hover:from-sky-500 hover:to-cyan-400">🔔 Slack 알림</button>
+        <a id="ghLink" href="https://github.com/seo1120/open-job-crawler" target="_blank" class="text-sm px-3 py-1.5 rounded-lg bg-neutral-900 text-white dark:bg-white dark:text-neutral-900">GitHub</a>
     </div>
   </header>
 
@@ -109,19 +109,43 @@
   <footer class="border-t border-neutral-200 dark:border-neutral-800 py-10 text-center text-xs text-neutral-500 dark:text-neutral-400">Made with ♥ by Lumi — Open Job Crawler</footer>
 
   <script>
-    // --- theme ---
-    const root = document.documentElement;
-    const themeToggle = document.getElementById('themeToggle');
-    const setTheme = (mode) => {
-      if (mode === 'dark') root.classList.add('dark'); else root.classList.remove('dark');
-      localStorage.setItem('theme', mode);
-      themeToggle.textContent = mode === 'dark' ? '☀️ 밝게' : '🌙 어둡게';
-    };
-    (function initTheme(){
-      const saved = localStorage.getItem('theme');
-      setTheme(saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
-    })();
-    themeToggle.addEventListener('click', () => setTheme(root.classList.contains('dark') ? 'light' : 'dark'));
+    // --- theme removed ---
+
+    // --- Slack notification ---
+    const slackNotifyBtn = document.getElementById('slackNotify');
+    const SLACK_WEBHOOK_URL = 'YOUR_SLACK_WEBHOOK_URL_HERE'; // 실제 웹훅 URL로 교체 필요
+    
+    async function sendSlackNotification(message) {
+      try {
+        const response = await fetch(SLACK_WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: message,
+            username: 'Job Crawler Bot',
+            icon_emoji: ':briefcase:'
+          })
+        });
+        
+        if (response.ok) {
+          alert('Slack 알림이 전송되었습니다! 🎉');
+        } else {
+          alert('Slack 알림 전송에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Slack 알림 오류:', error);
+        alert('Slack 알림 전송 중 오류가 발생했습니다.');
+      }
+    }
+    
+    slackNotifyBtn.addEventListener('click', () => {
+      const jobCount = JOBS.length;
+      const message = `🔔 *새 인턴십 공고 알림*\n\n현재 *${jobCount}개*의 인턴십 공고가 있습니다!\n\n📊 *최신 공고:*\n${JOBS.slice(0, 3).map(job => `• ${job.position} at ${job.company}`).join('\n')}\n\n🌐 *확인하기:* https://open-job-crawler-2mds128bk-seohyeons-projects-bfd6c770.vercel.app`;
+      
+      sendSlackNotification(message);
+    });
 
     // --- utils ---
     const $ = (sel, el=document) => el.querySelector(sel);
